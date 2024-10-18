@@ -1,0 +1,38 @@
+apiVersion: argoproj.io/v1alpha1
+kind: AppProject
+metadata:
+  name: gitops
+  namespace: argocd
+spec:
+  destinations:
+  - namespace: '*'
+    server: 'https://kubernetes.default.svc'
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: gitops-repo
+  namespace: argocd
+  labels:
+    argocd.argoproj.io/secret-type: repository
+stringData:
+  type: git
+  url: https://github.com/p2v1/argocd1.git
+  project: gitops
+---
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: mainapp
+spec:
+  destination:
+    namespace: default
+    server: https://kubernetes.default.svc
+  project: default
+  source:
+    path: applications
+    repoURL: https://github.com/p2v1/argocd1.git
+    targetRevision: HEAD
+    directory:
+      recurse: true
+      include: 'application.yaml'
