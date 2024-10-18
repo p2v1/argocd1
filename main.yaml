@@ -24,11 +24,12 @@ apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
   name: mainapp
+  namespace: argocd
 spec:
   destination:
-    namespace: default
+    namespace: argocd
     server: https://kubernetes.default.svc
-  project: default
+  project: gitops
   source:
     path: applications
     repoURL: https://github.com/p2v1/argocd1.git
